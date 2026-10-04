@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description"
+    content="A smart to-do list app with real Web Push deadline notifications to your mobile phone." />
+  <meta name="theme-color" content="#4f46e5" />
+  <title>My Tasks — Web Push Deadline Notifications</title>
+
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="app">
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+      <div>
+        <h1>MY TASKS</h1>
+        <p class="subtitle">Organize your day with real Web Push reminders to your phone.</p>
+      </div>
+
+      <div class="header-actions">
+        <!-- Tombol Settings -->
+        <button id="settings-btn" class="icon-button" type="button" aria-label="Open Settings" title="Settings">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
+
+        <!-- Tombol Dark/Light Mode -->
+        <button id="theme-toggle" class="icon-button theme-toggle" type="button" aria-label="Switch to dark mode"
+          title="Toggle Theme">
+          <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+          <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===== SMART TASK DASHBOARD ===== -->
+    <section class="dashboard-section" aria-label="Task Dashboard">
+      <div class="dashboard-grid">
+        <div class="stat-card" data-filter-action="all" title="View all tasks" role="button" tabindex="0">
+          <div class="stat-icon stat-total">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-total">0</span>
+            <span class="stat-label">Total Tasks</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-filter-action="active" title="View active tasks" role="button" tabindex="0">
+          <div class="stat-icon stat-active">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 14 14" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-active">0</span>
+            <span class="stat-label">Active</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-filter-action="completed" title="View completed tasks" role="button" tabindex="0">
+          <div class="stat-icon stat-completed">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-completed">0</span>
+            <span class="stat-label">Completed</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-filter-action="overdue" title="View overdue tasks" role="button" tabindex="0">
+          <div class="stat-icon stat-overdue">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-overdue">0</span>
+            <span class="stat-label">Overdue</span>
+          </div>
+        </div>
+
+        <div class="stat-card stat-rate-card" title="Overall completion rate">
+          <div class="stat-icon stat-rate">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <path d="m16 8-8 8" />
+              <circle cx="9" cy="9" r="1" />
+              <circle cx="15" cy="15" r="1" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-rate">0%</span>
+            <span class="stat-label">Rate</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Progress ("Today's Progress") -->
+      <div class="daily-progress-card">
+        <div class="progress-header">
+          <span class="progress-title">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            Today's Progress
+          </span>
+          <span id="daily-progress-text" class="progress-status">0 dari 0 tugas selesai (0%)</span>
+        </div>
+        <div class="progress-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="daily-progress-bar" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== POMODORO TIMER WIDGET ===== -->
+    <section class="pomodoro-widget" aria-label="Pomodoro Focus Timer">
+      <div class="pomodoro-header">
+        <button id="pomodoro-toggle-btn" class="pomodoro-toggle-header" type="button" aria-expanded="false" aria-controls="pomodoro-body">
+          <span class="pomodoro-title">
+            <svg class="icon pomodoro-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            Pomodoro Timer
+          </span>
+          <span class="pomodoro-badge" id="pomodoro-mini-display">25:00 • Focus</span>
+          <svg class="icon toggle-arrow" viewBox="0 0 24 24" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="pomodoro-body" class="pomodoro-body" hidden>
+        <div class="pomodoro-modes" role="tablist">
+          <button id="pomodoro-focus-mode" class="pomodoro-mode-btn is-active" type="button" role="tab" aria-selected="true">
+            🎯 Focus (25m)
+          </button>
+          <button id="pomodoro-break-mode" class="pomodoro-mode-btn" type="button" role="tab" aria-selected="false">
+            ☕ Break (5m)
+          </button>
+        </div>
+
+        <div class="pomodoro-display">
+          <span id="pomodoro-time" class="pomodoro-digits" aria-live="polite">25:00</span>
+          <span id="pomodoro-phase-label" class="pomodoro-phase">Focus Time</span>
+        </div>
+
+        <div class="pomodoro-controls">
+          <button id="pomodoro-start-btn" class="btn-primary pomodoro-btn" type="button">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+            <span id="pomodoro-start-text">Start</span>
+          </button>
+          <button id="pomodoro-reset-btn" class="btn-secondary pomodoro-btn" type="button" title="Reset Timer">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+            </svg>
+            Reset
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== QUICK ADD TASK ===== -->
+    <div class="quick-add-container">
+      <form id="quick-add-form" class="quick-add-form">
+        <div class="quick-add-input-wrapper">
+          <svg class="icon quick-add-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          <input id="quick-task-input" class="control quick-input" type="text" placeholder="⚡ Quick add task... (tekan Enter)" maxlength="120" autocomplete="off" />
+        </div>
+        <button type="submit" class="btn-primary quick-btn">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          <span>Add</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- ===== FORM TAMBAH TASK (DETAIL) ===== -->
+    <form id="task-form" class="task-form" novalidate>
+      <div class="field">
+        <label for="task-input">Task Name</label>
+        <input id="task-input" class="control" type="text" placeholder="What needs to be done?" maxlength="120"
+          autocomplete="off" />
+      </div>
+
+      <div class="task-options-grid">
+        <div class="field">
+          <label for="category-select">Category</label>
+          <select id="category-select" class="control">
+            <option value="Sekolah" selected>Sekolah</option>
+            <option value="TKJ">TKJ</option>
+            <option value="Pribadi">Pribadi</option>
+            <option value="Ujian">Ujian</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="priority-select">Priority</label>
+          <select id="priority-select" class="control">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="due-date-input">Due Date</label>
+          <input id="due-date-input" class="control" type="date" />
+        </div>
+
+        <div class="field">
+          <label for="due-time-input">Due Time</label>
+          <input id="due-time-input" class="control" type="time" />
+          <span class="field-hint">Default: 18:00</span>
+        </div>
+
+        <div class="field">
+          <label for="reminder-select">Reminder</label>
+          <select id="reminder-select" class="control">
+            <option value="none">No reminder</option>
+            <option value="30min">30 minutes before</option>
+            <option value="1hour" selected>1 hour before</option>
+            <option value="6hours">6 hours before</option>
+            <option value="12hours">12 hours before</option>
+            <option value="1day">1 day before</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="recurring-select">Recurring</label>
+          <select id="recurring-select" class="control">
+            <option value="none" selected>Tidak berulang</option>
+            <option value="daily">Setiap hari</option>
+            <option value="weekly">Setiap minggu</option>
+            <option value="monthly">Setiap bulan</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="task-notes-input">Notes / Catatan (opsional)</label>
+        <input id="task-notes-input" class="control" type="text" placeholder="Contoh: Kerjakan halaman 20-25..." maxlength="250" autocomplete="off" />
+      </div>
+
+      <button type="submit" class="btn-primary">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Add Task
+      </button>
+
+      <p id="form-message" class="form-message" role="alert"></p>
+    </form>
+
+    <!-- ===== PENCARIAN & FILTER ===== -->
+    <section class="task-controls" aria-label="Search and filter tasks">
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <svg class="icon search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input id="search-input" class="control search-input" type="text" placeholder="Search tasks by name..." autocomplete="off" />
+        <button id="search-clear-btn" class="search-clear-btn" type="button" aria-label="Clear search" hidden>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Filter Buttons & Selectors -->
+      <div class="filters-container">
+        <div class="filters" role="group" aria-label="Filter tasks">
+          <button class="filter-btn is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="filter-btn" type="button" data-filter="today" aria-pressed="false">Today</button>
+          <button class="filter-btn" type="button" data-filter="active" aria-pressed="false">Active</button>
+          <button class="filter-btn" type="button" data-filter="completed" aria-pressed="false">Completed</button>
+          <button class="filter-btn" type="button" data-filter="overdue" aria-pressed="false">Overdue</button>
+        </div>
+
+        <div class="secondary-filters">
+          <div class="filter-dropdown-wrapper">
+            <select id="filter-priority" class="control filter-select" aria-label="Filter by priority">
+              <option value="all">All Priorities</option>
+              <option value="high">High Priority</option>
+              <option value="medium">Medium Priority</option>
+              <option value="low">Low Priority</option>
+            </select>
+          </div>
+
+          <div class="filter-dropdown-wrapper">
+            <select id="filter-category" class="control filter-select" aria-label="Filter by category">
+              <option value="all">All Categories</option>
+              <option value="Sekolah">Sekolah</option>
+              <option value="TKJ">TKJ</option>
+              <option value="Pribadi">Pribadi</option>
+              <option value="Ujian">Ujian</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== DAFTAR TASK ===== -->
+    <section aria-label="Your tasks">
+      <ul id="task-list" class="task-list"></ul>
+
+      <div id="empty-state" class="empty-state" hidden>
+        <div class="empty-icon">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+        </div>
+        <h2 id="empty-title" class="empty-title"></h2>
+        <p id="empty-text" class="empty-text"></p>
+      </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="app-footer">
+      <p id="task-counter" class="task-counter" aria-live="polite">0 tasks remaining</p>
+      <button id="clear-completed" class="btn-text" type="button">Clear Completed</button>
+    </footer>
+
+    <!-- Canvas untuk Micro Confetti Animation -->
+    <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
+    <noscript>
+      <p class="form-message">Please enable JavaScript to use this app.</p>
+    </noscript>
+  </main>
+
+  <!-- ===== MODAL SETTINGS ===== -->
+  <div id="settings-modal" class="modal-backdrop" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-title" class="modal-title">Settings</h2>
+        <button id="close-settings-btn" class="icon-button" type="button" aria-label="Close Settings">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Section: Web Push Notifications -->
+      <div class="settings-section">
+        <h3 class="settings-section-title">🔔 Push Notifications</h3>
+
+        <p class="settings-notice">
+          Get real notifications on your mobile phone even when the browser is closed.
+        </p>
+
+        <div id="notification-status-badge" class="status-badge disabled">
+          Status: Disabled
+        </div>
+
+        <p id="notification-notice" class="settings-notice">
+          Click 'Enable Notifications' to register push subscription.
+        </p>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="toggle-notification-btn" class="btn-primary" type="button" style="flex: 1; min-width: 180px;">
+            Enable Notifications
+          </button>
+
+          <button id="test-notification-btn" class="btn-secondary" type="button" disabled>
+            Send Test Notification
+          </button>
+        </div>
+      </div>
+
+      <!-- Section: Backend Server URL -->
+      <div class="settings-section">
+        <h3 class="settings-section-title">Backend Push Server</h3>
+        <div class="field">
+          <label for="backend-url-input">Server API URL</label>
+          <input id="backend-url-input" class="control" type="text" placeholder="http://localhost:5000" />
+          <span class="field-hint">Definisikan URL backend Anda jika dideploy ke Render / Railway.</span>
+        </div>
+      </div>
+
+      <!-- Section: Default Reminder -->
+      <div class="settings-section">
+        <h3 class="settings-section-title">Default Reminder</h3>
+        <div class="field">
+          <label for="default-reminder-select">Default timing for new tasks</label>
+          <select id="default-reminder-select" class="control">
+            <option value="none">No reminder</option>
+            <option value="30min">30 minutes before</option>
+            <option value="1hour" selected>1 hour before</option>
+            <option value="6hours">6 hours before</option>
+            <option value="12hours">12 hours before</option>
+            <option value="1day">1 day before</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section: About -->
+      <div class="settings-section" style="border-top: 1px solid var(--border); padding-top: 12px;">
+        <h3 class="settings-section-title">About</h3>
+        <p class="settings-notice">
+          <strong>My Tasks v2.0 (Web Push Edition)</strong><br />
+          Frontend: GitHub Pages | Backend: Web Push VAPID + Node Cron Scheduler.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+
+</html>
